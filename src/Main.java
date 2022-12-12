@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -49,11 +50,37 @@ public class Main {
     public static void gameInit(String word){
         System.out.println("Guess: ");
         System.out.println(gallows[0]);
-        System.out.println(codedWord(word, '1' ));
+        System.out.println(codedWord(word) );
         System.out.println("Missies :");
 
         display(word);
-        gameInit(word);
+
+    }
+
+    /**
+     * Function name: display
+     *
+     */
+    public static void display (String word) {
+
+        for (int i = 0; i < words.length; i++) {
+            char userPick = userPick();
+            int error = countError(userPick, word);
+            StringBuilder codeWord = codedWord(word);
+
+
+            System.out.println(error);
+            System.out.println("Guess: " + userPick + "\n");
+            System.out.println(gallows[countError(userPick, word)]);
+//            System.out.println("Word: " + decodeWord);
+            if (error > 0) {
+                System.out.println("Missies: " + userPick);
+
+            }
+
+            System.out.println("Missies: ");
+        }
+
     }
 
     /**
@@ -102,28 +129,6 @@ public class Main {
         return Character.isLetter(userGuess);
     }
 
-    /**
-     * Function name: display
-     *
-     */
-    public static void display (String word) {
-        //boucle
-
-        while(countError(userPick(), word) > word.length() ) {
-            char userPick = userPick();
-            System.out.println("Guess: " + userPick + "\n");
-            System.out.println(gallows[countError(userPick, word)]);
-            System.out.println("Word: " + codedWord(word, userPick));
-            if (countError(userPick, word) > 0) {
-                System.out.println("Missies: " + userPick);
-
-            }
-
-            System.out.println("Missies: ");
-        }
-
-    }
-
     public static boolean isWin(char userPick, String word) {
         int count = 0;
         for(int i = 0; i < word.length(); i++) {
@@ -137,9 +142,12 @@ public class Main {
 
     public static int countError (char userPick, String word) {
         int userError = 0;
-        if(word.indexOf(userPick) == -1) {
-            userError++;
+        for(int i = 0; i < words.length; i++) {
+            if(word.charAt(i) != userPick) {
+                userError++;
+            }
         }
+        System.out.println(userError);
         return userError;
     }
 
@@ -152,16 +160,15 @@ public class Main {
      * @param userPick ( char )
      * @return underscoreWord ( char[] ) with char replace by underscore.
      */
-    public static String codedWord (String word, char userPick) {
+    public static StringBuilder codedWord (String word) {
         StringBuilder underscoreWord = new StringBuilder();
+        System.out.println(underscoreWord + "string builder ");
         for(int i = 0; i < word.length(); i++) {
-            if(word.charAt(i) != userPick) {
+             {
                 underscoreWord.append("_" + " ");
-            } else {
-                underscoreWord.append(userPick).append(" ");
             }
         }
-        return underscoreWord.toString();
+        return underscoreWord;
     }
 
 
