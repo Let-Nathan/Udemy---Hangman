@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -43,33 +44,54 @@ public class Main {
         gameInit(guessWord);
         int error = 0;
         char userPick;
-        StringBuilder codeWord = codedWord(guessWord);
-        StringBuilder wrongChar =  new StringBuilder();
 
-        for (int i = 0; i < words.length; i++) {
 
+        ArrayList<Character> codeWord = codedWord(guessWord);
+        StringBuilder wrongChar = new StringBuilder();
+
+        while(error != guessWord.length() ) {
+            if(isWin(codeWord,guessWord) ) {
+                System.out.println("You win !!");
+                break;
+            }
             userPick = userPick();
+            System.out.println(guessWord);
+            System.out.println(isWrongPick(userPick, guessWord));
 
             if (isWrongPick(userPick, guessWord)) {
+                System.out.println("coucou");
+                wrongChar.append(userPick);
+
                 error++;
+            } else  {
+                codeWord.set(guessWordIndex(userPick, guessWord),userPick);
             }
+
             System.out.println("Guess: " + userPick + "\n");
             System.out.println(gallows[error]);
 
-            System.out.println("Word: " + codeWord);
-            if (error > 0) {
-                wrongChar.append(userPick);
-                System.out.println("Missies: " + wrongChar);
-            } else {
-
-                System.out.println("Missies: ");
-            }
+            System.out.println("Word: " + codeWord.toString());
+            System.out.println("Missies: " + wrongChar);
 
         }
+    }
 
-
-
-
+    //TODO fix count = length
+    public static boolean isWin (ArrayList<Character> codeWord, String guessWord) {
+        boolean isWin = false;
+        int count = 0;
+        for(int i = 0; i < guessWord.length(); i++) {
+            if(codeWord.get(i) == guessWord.charAt(i) ) {
+                count++;
+            }
+            if (count == guessWord.length() ) {
+                isWin = true;
+                break;
+            }
+            System.out.println("count good char" + count);
+        }
+        System.out.println(guessWord.length());
+        return isWin;
     }
 
     public static void gameInit(String word){
@@ -117,6 +139,23 @@ public class Main {
     }
 
     /**
+     * function name: guessWordIndex
+     *
+     * @param userPick
+     * @param guessWord
+     * @return index ( null || int) if there is a match return int.
+     *
+     */
+    public static Integer guessWordIndex(char userPick, String guessWord) {
+        Integer index = 0;
+        for(int i = 0; i < guessWord.length(); i++) {
+            if(guessWord.charAt(i) == userPick)  {
+                index = i;
+            }
+        }
+        return index;
+    }
+    /**
      * Function name: isValidLetter
      *
      * @param userGuess ( char )
@@ -127,13 +166,14 @@ public class Main {
     }
 
     public static boolean isWrongPick (char userPick, String word) {
-        for(int i = 0; i < words.length; i++) {
-            if(word.charAt(i) != userPick) {
-                return true;
+        boolean isWrongPick = true;
+        for(int i = 0; i < word.length(); i++) {
+            if(word.charAt(i) == userPick) {
+                isWrongPick = false;
+                break;
             }
-
         }
-        return false;
+        return  isWrongPick;
     }
 
     /**
@@ -144,11 +184,11 @@ public class Main {
      * @param word ( String )
      * @return underscoreWord ( char[] ) with char replace by underscore.
      */
-    public static StringBuilder codedWord (String word) {
-        StringBuilder underscoreWord = new StringBuilder();
+    public static ArrayList<Character> codedWord (String word) {
+        ArrayList<Character> underscoreWord = new ArrayList<Character>();
         for(int i = 0; i < word.length(); i++) {
              {
-                underscoreWord.append("_" + " ");
+                underscoreWord.add('_');
             }
         }
         return underscoreWord;
