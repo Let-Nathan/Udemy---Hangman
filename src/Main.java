@@ -17,26 +17,10 @@ public class Main {
     };
 
 
-
-    //          TODO
-    // 1 - Pick a random word.
-    // 2 - User need to guess ~
-    //          Loose: if 6  mistake.
-    //          Win: if guess the word.
-    //
-    // 3 - Display wrong char as "Misses :"
-    // 4 - Display current guesses as "Word: _ _ _ _ " ( _ = nbr of character to guess).
-    // 5 - Construct the hangman and display it
-
-    // Function
-    // checkChar
-    //
-
-
-    //Possible add :
-    // -> Add / create a word
-    // -> Init game function
-
+    //TODO
+    //  1. Fix the displayed codeWord.
+    //  2. Split code main function.
+    //  3. Fix loose if 6 mistake
     public static void main(String[] args) {
 
         String guessWord = words[randomNumber()];
@@ -49,7 +33,7 @@ public class Main {
         ArrayList<Character> codeWord = codedWord(guessWord);
         StringBuilder wrongChar = new StringBuilder();
 
-        while(error != guessWord.length() ) {
+        while(error <= 6 ) {
             if(isWin(codeWord,guessWord) ) {
                 System.out.println("You win !!");
                 break;
@@ -59,9 +43,7 @@ public class Main {
             System.out.println(isWrongPick(userPick, guessWord));
 
             if (isWrongPick(userPick, guessWord)) {
-                System.out.println("coucou");
                 wrongChar.append(userPick);
-
                 error++;
             } else  {
                 codeWord.set(guessWordIndex(userPick, guessWord),userPick);
@@ -70,13 +52,21 @@ public class Main {
             System.out.println("Guess: " + userPick + "\n");
             System.out.println(gallows[error]);
 
-            System.out.println("Word: " + codeWord.toString());
+            System.out.println("Word: " + codeWord);
             System.out.println("Missies: " + wrongChar);
 
         }
     }
 
-    //TODO fix count = length
+    /**
+     * Function name: isWin
+     * Inside function:
+     *  1. Count if codeWord == guessWord.
+     *  2. return true if it's same length, false otherwise.
+     * @param codeWord ( ArrayList<Character> )
+     * @param guessWord ( String )
+     * @return boolean
+     */
     public static boolean isWin (ArrayList<Character> codeWord, String guessWord) {
         boolean isWin = false;
         int count = 0;
@@ -88,12 +78,16 @@ public class Main {
                 isWin = true;
                 break;
             }
-            System.out.println("count good char" + count);
         }
-        System.out.println(guessWord.length());
         return isWin;
     }
 
+    /**
+     * Function name: gameInit
+     * Inside function: Display the game for first time.
+     * @param word ( String )
+     *
+     */
     public static void gameInit(String word){
         System.out.println("Guess: ");
         System.out.println(gallows[0]);
