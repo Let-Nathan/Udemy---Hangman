@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -16,65 +17,81 @@ public class Main {
     };
 
 
-
-    //          TODO
-    // 1 - Pick a random word.
-    // 2 - User need to guess ~
-    //          Loose: if 6  mistake.
-    //          Win: if guess the word.
-    //
-    // 3 - Display wrong char as "Misses :"
-    // 4 - Display current guesses as "Word: _ _ _ _ " ( _ = nbr of character to guess).
-    // 5 - Construct the hangman and display it
-
-    // Function
-    // checkChar
-    //
-
-
-    //Possible add :
-    // -> Add / create a word
-    // -> Init game function
+    //TODO
+    //  1. Fix the displayed codeWord.
+    //  2. Split code main function.
 
     public static void main(String[] args) {
 
         String guessWord = words[randomNumber()];
-        System.out.println("Welcome to the Hangman game !\nChoose a letter and good luck :)\n");
+
         gameInit(guessWord);
+
         int error = 0;
         char userPick;
-        StringBuilder codeWord = codedWord(guessWord);
-        StringBuilder wrongChar =  new StringBuilder();
 
-        for (int i = 0; i < words.length; i++) {
-            System.out.println(guessWord);
+        ArrayList<Character> codeWord = codedWord(guessWord);
+        StringBuilder wrongChar = new StringBuilder();
+
+        while(error <= 6 ) {
+            if(isWin(codeWord,guessWord) ) {
+                System.out.println("You win !!");
+                break;
+            }
+            if(error == 6 ) {
+                System.out.println("You loose !");
+                break;
+            }
             userPick = userPick();
 
             if (isWrongPick(userPick, guessWord)) {
+                wrongChar.append(userPick);
                 error++;
             } else {
-                codeWord.append(userPick).charAt(i);
+                codeWord.set(guessWordIndex(userPick, guessWord),userPick);
             }
+
             System.out.println("Guess: " + userPick + "\n");
             System.out.println(gallows[error]);
 
             System.out.println("Word: " + codeWord);
-            if (error > 0) {
-                wrongChar.append(userPick);
-                System.out.println("Missies: " + wrongChar);
-            } else {
-
-                System.out.println("Missies: ");
-            }
+            System.out.println("Missies: " + wrongChar);
 
         }
-
-
-
-
     }
 
+    /**
+     * Function name: isWin
+     * Inside function:
+     *  1. Count if codeWord == guessWord.
+     *  2. return true if it's same length, false otherwise.
+     * @param codeWord ( ArrayList<Character> )
+     * @param guessWord ( String )
+     * @return boolean
+     */
+    public static boolean isWin (ArrayList<Character> codeWord, String guessWord) {
+        boolean isWin = false;
+        int count = 0;
+        for(int i = 0; i < guessWord.length(); i++) {
+            if(codeWord.get(i) == guessWord.charAt(i) ) {
+                count++;
+            }
+            if (count == guessWord.length() ) {
+                isWin = true;
+                break;
+            }
+        }
+        return isWin;
+    }
+
+    /**
+     * Function name: gameInit
+     * Inside function: Display the game for first time.
+     * @param word ( String )
+     *
+     */
     public static void gameInit(String word){
+        System.out.println("Welcome to the Hangman game !\nChoose a letter and good luck :)\n");
         System.out.println("Guess: ");
         System.out.println(gallows[0]);
         System.out.println(codedWord(word) );
@@ -119,6 +136,24 @@ public class Main {
     }
 
     /**
+     * function name: guessWordIndex
+     *
+     * @param userPick ( char )
+     * @param guessWord ( String )
+     * @return index ( null || int) if there is a match return int.
+     *
+     */
+    public static Integer guessWordIndex(char userPick, String guessWord) {
+        int index = 0;
+        for(int i = 0; i < guessWord.length(); i++) {
+            if(guessWord.charAt(i) == userPick)  {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    /**
      * Function name: isValidLetter
      *
      * @param userGuess ( char )
@@ -129,13 +164,16 @@ public class Main {
     }
 
     public static boolean isWrongPick (char userPick, String word) {
-        for(int i = 0; i < words.length; i++) {
-            if(word.charAt(i) == userPick) {
-                return false;
-            }
 
+        boolean isWrongPick = true;
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) == userPick) {
+                isWrongPick = false;
+                break;
+
+            }
         }
-        return true;
+        return isWrongPick;
     }
 
     /**
@@ -146,11 +184,11 @@ public class Main {
      * @param word ( String )
      * @return underscoreWord ( char[] ) with char replace by underscore.
      */
-    public static StringBuilder codedWord (String word) {
-        StringBuilder underscoreWord = new StringBuilder();
+    public static ArrayList<Character> codedWord (String word) {
+        ArrayList<Character> underscoreWord = new ArrayList<Character>();
         for(int i = 0; i < word.length(); i++) {
              {
-                underscoreWord.append("_" + " ");
+                underscoreWord.add('_');
             }
         }
         return underscoreWord;
