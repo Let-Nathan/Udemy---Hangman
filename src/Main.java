@@ -47,11 +47,13 @@ public class Main {
         StringBuilder wrongChar =  new StringBuilder();
 
         for (int i = 0; i < words.length; i++) {
-
+            System.out.println(guessWord);
             userPick = userPick();
 
             if (isWrongPick(userPick, guessWord)) {
                 error++;
+            } else {
+                codeWord.append(userPick).charAt(i);
             }
             System.out.println("Guess: " + userPick + "\n");
             System.out.println(gallows[error]);
@@ -128,12 +130,12 @@ public class Main {
 
     public static boolean isWrongPick (char userPick, String word) {
         for(int i = 0; i < words.length; i++) {
-            if(word.charAt(i) != userPick) {
-                return true;
+            if(word.charAt(i) == userPick) {
+                return false;
             }
 
         }
-        return false;
+        return true;
     }
 
     /**
